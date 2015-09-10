@@ -47,9 +47,6 @@ class Model(object):
 # ########
 
 from browser import document, html
-document['main'] <= html.INPUT(Id="input")
-document['main'] <= html.INPUT(Id="input2")
-document['main'] <= html.DIV(Id='output')
 
 def value_string(obj, attr):
     def helper(ev):
@@ -64,20 +61,28 @@ class A(Model):
         super().__init__()
         self.a = ''
 
+# the model
 obj = A()
 
+# <input id='input' value_string=${obj.a}>
+document['main'] <= html.INPUT(Id="input")
 document['input'].bind('keyup', value_string(obj, 'a'))
+@reactive
+def input():
+    document['input'].value = obj.a
+
+# <input id='input2' value_string=${obj.a}>
+document['main'] <= html.INPUT(Id="input2")
 document['input2'].bind('keyup', value_string(obj, 'a'))
-
 @reactive
-def g():
-    trace = document['input']
-    trace.value = obj.a
+def input2():
+    document['input2'].value = obj.a
 
+# <div id='output'>${obj.a}</div>
+document['main'] <= html.DIV(Id='output')
 @reactive
-def f():
-    trace = document['output']
-    trace.html = obj.a
+def output():
+    document['output'].html = obj.a
+    
 
-#f()
-
+    
