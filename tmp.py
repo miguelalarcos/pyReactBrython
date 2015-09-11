@@ -1,11 +1,14 @@
+# this is an example of react client side. There are two inputs and a div, all binded to an attribute of a model
+
+# ##### react core
+
 current_name = None
 current_call = None
 execute = []
 map_ = {}
 
-
+# decorator to make a function reactive when the model in which it's based changes
 def reactive(func):
-
     def helper():
         global current_call, current_name
         current_name = func.__name__
@@ -18,7 +21,7 @@ def reactive(func):
     helper()
     return helper
 
-
+# base class Model. __getattr__ makes (marks) the current reactive function to be called when the attribute is set
 class Model(object):
     def __init__(self):
         self.__dict__['_map'] = []
@@ -44,7 +47,7 @@ class Model(object):
                 if item['attr'] == key and item['call'] not in execute:
                     execute.append(item['call'])
 
-# ########
+# ######## the gui
 
 from browser import document, html
 
@@ -61,8 +64,7 @@ class A(Model):
         super().__init__()
         self.a = ''
 
-# the model
-obj = A()
+obj = A() # the model
 
 # <input id='input' value_string=${obj.a}>
 document['main'] <= html.INPUT(Id="input")
@@ -84,5 +86,15 @@ document['main'] <= html.DIV(Id='output')
 def output():
     document['output'].html = obj.a
     
+def hello():
+    if obj.a == 'hello':
+        return 'world'
+    else:
+        return ':)'
 
+# <div id='output2'>${hello}</div>
+document['main'] <= html.DIV(Id='output2')
+@reactive
+def output2():
+    document['output2'].html = hello()        
     
