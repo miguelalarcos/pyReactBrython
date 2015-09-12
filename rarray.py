@@ -62,7 +62,7 @@ class Controller(object):
             else:
                 print 'y sale', 'OUT'
                 self.out(model)
-                return True
+                return 'OUT'
         else:
             print 'esta fuera'
             if not model.__deleted__ and self.filter(model):
@@ -136,10 +136,10 @@ m = Car(id='3', x=3)
 controller.test(m)
 
 m.x = -1
-controller.test(m)
-print controller.lista
+if controller.test(m) == 'OUT':
+    print 'quitamos m de cache', m
+    del Car.objects[m.id]
 
-controller.test(m)
 m = Car(id='4', x=300)
 controller.test(m)
 m.x = 301
